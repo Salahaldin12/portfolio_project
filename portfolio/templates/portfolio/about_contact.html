@@ -1,0 +1,135 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}عني والتواصل | {% if profile %}{{ profile.full_name }}{% else %}بورتفوليو{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-section about-hero">
+    <div class="container about-grid">
+        <div class="about-info">
+    <span class="section-tag">نبذة تعريفية</span>
+    <h1 class="hero-name">
+        {% if profile and profile.full_name %}{{ profile.full_name }}{% else %}صلاح الدين عاطف محمد{% endif %}
+    </h1>
+    <p class="hero-role">
+        {% if profile and profile.title %}{{ profile.title }}{% else %}مهندس برمجيات | الذكاء الاصطناعي وتطوير المنصات المتكاملة والحلول الرقمية{% endif %}
+    </p>
+    <p class="hero-bio multiline-text">
+        {% if profile and profile.bio %}{{ profile.bio }}{% else %}صلاح الدين عاطف محمد، مهندس برمجيات بخبرة تزيد عن 5 سنوات في السوق في مجالات الذكاء الاصطناعي وتطوير المنصات المتكاملة والحلول الرقمية.{% endif %}
+    </p>
+
+    <div class="hero-actions">
+        <a href="{% url 'portfolio:projects' %}" class="btn btn-gold">استعرض سابقة الأعمال</a>
+        <a href="{% url 'portfolio:services' %}" class="btn btn-outline">تصفح الخدمات</a>
+        {% if profile and profile.cv_file %}
+            <a href="{{ profile.cv_file.url }}" target="_blank" rel="noopener" class="btn btn-outline">
+                <i class="fa-solid fa-file-arrow-down"></i> تحميل السيرة الذاتية
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+        <div class="about-avatar-box">
+            {% if profile and profile.profile_image %}
+                <img src="{{ profile.profile_image.url }}" alt="{{ profile.full_name }}" class="avatar-img">
+            {% else %}
+                <div class="avatar-placeholder">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="page-section contact-section" id="contact">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">تواصل معي</span>
+            <h2 class="section-title">معلومات التواصل وإرسال رسالة</h2>
+            <p class="section-subtitle">هل لديك مشروع أو فرصة عمل أو استفسار؟ تواصل معي مباشرة.</p>
+        </div>
+
+        <div class="contact-layout">
+            <div class="contact-details-card">
+    <h3>بيانات التواصل المباشر</h3>
+    <ul class="contact-list">
+        {% if profile.email %}
+            <li>
+                <i class="fa-solid fa-envelope"></i>
+                <div>
+                    <span>البريد الإلكتروني</span>
+                    <a href="mailto:{{ profile.email }}">{{ profile.email }}</a>
+                </div>
+            </li>
+        {% endif %}
+
+        {% if profile.phone %}
+            <li>
+                <i class="fa-solid fa-phone"></i>
+                <div>
+                    <span>الهاتف / واتساب</span>
+                    <span dir="ltr">{{ profile.phone }}</span>
+                </div>
+            </li>
+        {% endif %}
+
+        {% if profile.location %}
+            <li>
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
+                    <span>الموقع</span>
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ profile.location|urlencode }}"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        {{ profile.location }} <i class="fa-solid fa-up-right-from-square map-link-icon"></i>
+                    </a>
+                </div>
+            </li>
+        {% endif %}
+
+        {% if profile.linkedin_url %}
+            <li>
+                <i class="fa-brands fa-linkedin"></i>
+                <div>
+                    <span>LinkedIn</span>
+                    <a href="{{ profile.linkedin_url }}"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                         حسابي على LinkedIn <i class="fa-solid fa-up-right-from-square map-link-icon"></i>
+                    </a>
+                </div>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+
+            <form method="post" class="contact-form-card">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_name">الاسم الكامل</label>
+                        <input type="text" id="id_name" name="name" required placeholder="اكتب اسمك">
+                    </div>
+                    <div class="form-group">
+                        <label for="id_email">البريد الإلكتروني</label>
+                        <input type="email" id="id_email" name="email" required placeholder="name@example.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_subject">الموضوع</label>
+                    <input type="text" id="id_subject" name="subject" required placeholder="موضوع الرسالة أو المشروع">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_message">تفاصيل الرسالة</label>
+                    <textarea id="id_message" name="message" rows="5" required placeholder="اكتب رسالتك هنا..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-gold btn-block">
+                    إرسال الرسالة <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

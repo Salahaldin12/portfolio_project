@@ -1,0 +1,82 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}{{ project.title }} | سابقة الأعمال{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <a href="{% url 'portfolio:projects' %}" class="back-link">
+            <i class="fa-solid fa-arrow-right"></i> العودة إلى سابقة الأعمال
+        </a>
+
+        <div class="project-detail-header">
+            <span class="category-badge static-badge">{{ project.get_category_display }}</span>
+            <h1 class="detail-title">{{ project.title }}</h1>
+            <div class="detail-meta">
+                <span><i class="fa-regular fa-clock"></i> مدة التنفيذ: <strong>{{ project.execution_time }}</strong></span>
+                <span><i class="fa-regular fa-calendar"></i> تاريخ الإضافة: {{ project.created_at|date:"Y-m-d" }}</span>
+            </div>
+        </div>
+
+        <div class="project-showcase">
+            <div class="main-preview">
+                {% if project.main_image %}
+                    <img id="activeProjectImage" src="{{ project.main_image.url }}" alt="{{ project.title }}">
+                {% endif %}
+            </div>
+
+            {% if project.images.all %}
+                <div class="gallery-thumbs">
+                    {% if project.main_image %}
+                        <button type="button" class="thumb-item active" data-src="{{ project.main_image.url }}" data-caption="{{ project.title }}">
+                            <img src="{{ project.main_image.url }}" alt="{{ project.title }}">
+                        </button>
+                    {% endif %}
+                    {% for img in project.images.all %}
+                        <button type="button" class="thumb-item" data-src="{{ img.image.url }}" data-caption="{{ img.caption|default:project.title }}">
+                            <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}">
+                        </button>
+                    {% endfor %}
+                </div>
+                <p id="activeImageCaption" class="gallery-caption">{{ project.title }}</p>
+            {% endif %}
+        </div>
+
+        <div class="project-detail-body">
+            <div class="detail-description">
+                <h2>عن المشروع</h2>
+                <p class="multiline-text">{{ project.description }}</p>
+            </div>
+
+            <aside class="detail-sidebar">
+                <div class="info-box">
+                    <h3>التقنيات المستخدمة</h3>
+                    <div class="tech-tags">
+                        {% for tech in project.get_tech_list %}
+                            <span class="tech-tag">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if project.live_url or project.github_url %}
+                    <div class="info-box">
+                        <h3>روابط المشروع</h3>
+                        <div class="detail-links">
+                            {% if project.live_url %}
+                                <a href="{{ project.live_url }}" target="_blank" rel="noopener" class="btn btn-gold btn-block">
+                                    معاينة المشروع <i class="fa-solid fa-up-right-from-square"></i>
+                                </a>
+                            {% endif %}
+                            {% if project.github_url %}
+                                <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="btn btn-outline btn-block">
+                                    الكود على GitHub <i class="fa-brands fa-github"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

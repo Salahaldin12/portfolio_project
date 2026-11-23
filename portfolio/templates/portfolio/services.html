@@ -1,0 +1,62 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}الخدمات | {% if profile %}{{ profile.full_name }}{% else %}بورتفوليو{% endif %}{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">ما أقدمه</span>
+            <h1 class="section-title">الخدمات البرمجية والتقنية</h1>
+            <p class="section-subtitle">حلول متكاملة مصممة بعناية لتلبية احتياجات الشركات والمشاريع الناشئة.</p>
+        </div>
+
+        {% if services %}
+            <div class="cards-grid services-grid">
+                {% for service in services %}
+                    <article class="card service-card">
+                        {% if service.image %}
+                            <div class="card-media">
+                                <img src="{{ service.image.url }}" alt="{{ service.title }}" loading="lazy">
+                            </div>
+                        {% elif service.icon_class %}
+                            <div class="service-icon">
+                                <i class="{{ service.icon_class }}"></i>
+                            </div>
+                        {% else %}
+                            <div class="service-icon">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h2 class="card-title">{{ service.title }}</h2>
+                            <p class="card-text">{{ service.description }}</p>
+
+                            <div class="card-actions">
+                                {% if profile and profile.get_whatsapp_number %}
+                                    <a href="https://wa.me/{{ profile.get_whatsapp_number }}?text={{ 'مرحباً، أرغب في طلب خدمة: '|add:service.title|add:'%0Aالتفاصيل: '|add:service.description|truncatechars:220|urlencode }}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       class="btn btn-whatsapp btn-block">
+                                        <i class="fa-brands fa-whatsapp"></i> اطلب الخدمة عبر واتساب
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'portfolio:about_contact' %}#contact" class="btn btn-outline btn-block">
+                                        اطلب الخدمة الآن
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fa-regular fa-folder-open"></i>
+                <p>لم يتم إضافة خدمات بعد. يمكنك إضافة الخدمات من لوحة تحكم Django Admin.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

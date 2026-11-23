@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}بورتفوليو | صلاح الدين{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav-wrapper">
+            <a href="{% url 'portfolio:about_contact' %}" class="brand-logo">
+                {% if profile and profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="{{ profile.full_name }}" class="header-avatar">
+                {% else %}
+                    <span class="header-avatar-fallback"><i class="fa-solid fa-user"></i></span>
+                {% endif %}
+
+                {% if profile and profile.full_name %}
+                    <span>{{ profile.full_name }}</span>
+                {% else %}
+                    <span>Software Solutions Engineer</span>
+                {% endif %}
+            </a>
+
+            <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <nav class="main-nav" id="mainNav">
+                <a href="{% url 'portfolio:about_contact' %}" class="nav-link {% if request.resolver_match.url_name == 'about_contact' %}active{% endif %}">عني والتواصل</a>
+                <a href="{% url 'portfolio:services' %}" class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}">الخدمات</a>
+                <a href="{% url 'portfolio:projects' %}" class="nav-link {% if request.resolver_match.url_name == 'projects' or request.resolver_match.url_name == 'project_detail' %}active{% endif %}">سابقة الأعمال</a>
+            </nav>
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="container alerts-wrapper">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <span>{{ message }}</span>
+                    <button type="button" class="alert-close" aria-label="إغلاق">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-wrapper">
+            <p>© {% now "Y" %} {% if profile %}{{ profile.full_name }}{% else %}Software Solutions Engineer{% endif %} — جميع الحقوق محفوظة.</p>
+            <div class="social-links">
+                {% if profile.github_url %}
+                    <a href="{{ profile.github_url }}" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                {% endif %}
+                {% if profile.linkedin_url %}
+                    <a href="{{ profile.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                {% endif %}
+                {% if profile.email %}
+                    <a href="mailto:{{ profile.email }}" aria-label="البريد الإلكتروني"><i class="fa-solid fa-envelope"></i></a>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
